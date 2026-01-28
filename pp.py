@@ -6,8 +6,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 
+import joblib
 with open(MODEL_PATH, "rb") as f:
-    model = pickle.load(f)
+    model = joblib.load(f)
+
 
 # ✅ Define the exact features used during training
 FEATURE_NAMES = [

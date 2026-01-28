@@ -2,36 +2,34 @@ import pickle
 import pandas as pd
 import os
 
-# Load the trained model
+# Load model safely
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 
 with open(MODEL_PATH, "rb") as f:
-    model, feature_names = pickle.load(f)
+    model = pickle.load(f)
+
+# ✅ Define the exact features used during training
+FEATURE_NAMES = [
+    'Pclass',
+    'Age',
+    'SibSp',
+    'Parch',
+    'Fare',
+    'Sex_male',
+    'Embarked_Q',
+    'Embarked_S'
+]
 
 def predict_survival(input_data: dict):
-    """
-    input_data: dictionary with passenger features
-    Example:
-    {
-        'Pclass': 3,
-        'Age': 29,
-        'SibSp': 0,
-        'Parch': 0,
-        'Fare': 7.25,
-        'Sex_male': 1,
-        'Embarked_Q': 0,
-        'Embarked_S': 1
-    }
-    """
     input_df = pd.DataFrame([input_data])
 
-    # Ensure all columns exist
-    for col in feature_names:
+    # Add any missing columns
+    for col in FEATURE_NAMES:
         if col not in input_df.columns:
             input_df[col] = 0
 
-    input_df = input_df[feature_names]
-    prediction = model.predict(input_df)[0]
-    probability = model.predict_proba(input_df)[0][1]
-    return prediction, round(probability, 2)
+    # Keep correct order
+    input_df = input_df[FEATURE_NAMES]
+
+    prediction = model.p
